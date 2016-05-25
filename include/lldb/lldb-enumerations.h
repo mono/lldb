@@ -178,6 +178,7 @@ namespace lldb {
     {
         eScriptLanguageNone,
         eScriptLanguagePython,
+        eScriptLanguageMono,
         eScriptLanguageDefault = eScriptLanguagePython
     };
 

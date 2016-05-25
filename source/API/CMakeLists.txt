@@ -74,6 +74,7 @@ add_lldb_library(liblldb SHARED
 target_link_libraries(liblldb PRIVATE
   lldbPluginScriptInterpreterNone
   lldbPluginScriptInterpreterPython
+  lldbPluginScriptInterpreterMono
   )
 
 set_target_properties(liblldb
