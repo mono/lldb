@@ -118,3 +118,8 @@ if (LLDB_WRAP_PYTHON)
 endif()
 target_link_libraries(liblldb ${cmake_2_8_12_PRIVATE} ${LLDB_SYSTEM_LIBS})
 
+include(${LLDB_PROJECT_ROOT}/cmake/Mono.cmake)
+
+if (NOT LLDB_DISABLE_MONO)
+  target_link_libraries(liblldb PRIVATE ${MONO_LIB})
+endif()
