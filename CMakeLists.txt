@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.12.2)
 include(cmake/modules/LLDBStandalone.cmake)
 include(cmake/modules/LLDBConfig.cmake)
 include(cmake/modules/AddLLDB.cmake)
+include(cmake/Mono.cmake)
 
 if (__ANDROID_NDK__ OR (CMAKE_SYSTEM_NAME MATCHES "Windows"))
   set(LLDB_DEFAULT_DISABLE_LIBEDIT 1)
@@ -60,3 +61,18 @@ if (NOT LLDB_DISABLE_PYTHON)
             COMMENT "Copying Python DLL to LLDB binaries directory.")
     endif ()
 endif ()
+
+if (NOT LLDB_DISABLE_MONO)
+    # Add a Post-Build Event to copy the custom Mono DLL to the lldb binaries dir so that Windows can find it when launching
+    # lldb.exe or any other executables that were linked with liblldb.
+    if (WIN32 AND NOT "${MONO_DLL}" STREQUAL "")
+        # When using the Visual Studio CMake generator the lldb binaries end up in Release/bin, Debug/bin etc.
+        file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/bin" LLDB_BIN_DIR)
+        file(TO_NATIVE_PATH "${MONO_DLL}" MONO_DLL_NATIVE_PATH)
+        add_custom_command(
+            TARGET finish_swig
+            POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy ${MONO_DLL_NATIVE_PATH} ${LLDB_BIN_DIR}
+            COMMENT "Copying Mono DLL to LLDB binaries directory.")
+    endif ()
+endif()
