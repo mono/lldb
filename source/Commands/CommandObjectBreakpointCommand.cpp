@@ -328,7 +328,7 @@ are no syntax errors may indicate that a function was declared but never called.
                                                                                      eScriptLanguageNone,
                                                                                      error);
 
-                if (m_script_language == eScriptLanguagePython || m_script_language == eScriptLanguageDefault)
+                if (m_script_language == eScriptLanguagePython || m_script_language == eScriptLanguageMono || m_script_language == eScriptLanguageDefault)
                 {
                     m_use_script_language = true;
                 }
@@ -526,10 +526,11 @@ CommandObjectBreakpointCommandAdd::g_reader_instructions = "Enter your debugger 
 // language to lldb and have it pickable here without having to change this enumeration by hand and rebuild lldb proper.
 
 static OptionEnumValueElement
-g_script_option_enumeration[4] =
+g_script_option_enumeration[] =
 {
     { eScriptLanguageNone,    "command",         "Commands are in the lldb command interpreter language"},
     { eScriptLanguagePython,  "python",          "Commands are in the Python language."},
+    { eScriptLanguageMono,    "mono",            "Commands are in the languages supported by Mono runtime." },
     { eSortOrderByName,       "default-script",  "Commands are in the default scripting language."},
     { 0,                      nullptr,           nullptr }
 };

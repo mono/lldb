@@ -49,8 +49,7 @@ CommandObjectScript::DoExecute
     CommandReturnObject &result
 )
 {
-#ifdef LLDB_DISABLE_PYTHON
-    // if we ever support languages other than Python this simple #ifdef won't work
+#if defined(LLDB_DISABLE_PYTHON) && defined(LLDB_DISABLE_MONO)
     result.AppendError("your copy of LLDB does not support scripting.");
     result.SetStatus (eReturnStatusFailed);
     return false;

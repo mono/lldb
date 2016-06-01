@@ -87,6 +87,7 @@ g_language_enumerators[] =
 {
     { eScriptLanguageNone,      "none",     "Disable scripting languages."},
     { eScriptLanguagePython,    "python",   "Select python as the default scripting language."},
+    { eScriptLanguageMono,      "mono",     "Select Mono as the default scripting language." },
     { eScriptLanguageDefault,   "default",  "Select the lldb default as the default scripting language."},
     { 0, nullptr, nullptr }
 };
@@ -137,7 +138,7 @@ g_properties[] =
 {   "frame-format",             OptionValue::eTypeFormatEntity, true, 0    , DEFAULT_FRAME_FORMAT, nullptr, "The default frame format string to use when displaying stack frame information for threads." },
 {   "notify-void",              OptionValue::eTypeBoolean     , true, false, nullptr, nullptr, "Notify the user explicitly if an expression returns void (default: false)." },
 {   "prompt",                   OptionValue::eTypeString      , true, OptionValueString::eOptionEncodeCharacterEscapeSequences, "(lldb) ", nullptr, "The debugger command line prompt displayed for the user." },
-{   "script-lang",              OptionValue::eTypeEnum        , true, eScriptLanguagePython, nullptr, g_language_enumerators, "The script language to be used for evaluating user-written scripts." },
+{   "script-lang",              OptionValue::eTypeEnum        , true, eScriptLanguageMono, nullptr, g_language_enumerators, "The script language to be used for evaluating user-written scripts." },
 {   "stop-disassembly-count",   OptionValue::eTypeSInt64      , true, 4    , nullptr, nullptr, "The number of disassembly lines to show when displaying a stopped context." },
 {   "stop-disassembly-display", OptionValue::eTypeEnum        , true, Debugger::eStopDisassemblyTypeNoDebugInfo, nullptr, g_show_disassembly_enum_values, "Control when to display disassembly when displaying a stopped context." },
 {   "stop-line-count-after",    OptionValue::eTypeSInt64      , true, 3    , nullptr, nullptr, "The number of sources lines to display that come after the current source line when displaying a stopped context." },
