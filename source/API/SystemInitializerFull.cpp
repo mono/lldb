@@ -19,6 +19,10 @@
 #include "Plugins/ScriptInterpreter/Python/ScriptInterpreterPython.h"
 #endif
 
+#if !defined(LLDB_DISABLE_MONO)
+#include "Plugins/ScriptInterpreter/Mono/ScriptInterpreterMono.h"
+#endif
+
 #include "lldb/Core/Debugger.h"
 #include "lldb/Core/Timer.h"
 #include "lldb/Host/Host.h"
@@ -279,6 +283,10 @@ SystemInitializerFull::Initialize()
     // so it can compute the python directory etc, so we need to do this after
     // SystemInitializerCommon::Initialize().
     ScriptInterpreterPython::Initialize();
+#endif
+
+#if !defined(LLDB_DISABLE_MONO)
+    ScriptInterpreterMono::Initialize();
 #endif
 
     // Initialize LLVM and Clang
