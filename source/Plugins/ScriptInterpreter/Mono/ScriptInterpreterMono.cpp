@@ -13,19 +13,62 @@
 #include "lldb/Core/Stream.h"
 #include "lldb/Core/StreamFile.h"
 #include "lldb/Core/StringList.h"
+#include "lldb/Core/Timer.h"
 #include "lldb/Interpreter/CommandInterpreter.h"
+#include "llvm/Support/Path.h"
+#include "llvm/ADT/SmallString.h"
+
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/mono-config.h>
+#include <mono/metadata/debug-helpers.h>
+
 #include <mutex>
 
 using namespace lldb;
 using namespace lldb_private;
 
+static bool g_initialized = false;
+
 ScriptInterpreterMono::ScriptInterpreterMono(CommandInterpreter &interpreter)
     : ScriptInterpreter(interpreter, eScriptLanguageMono)
 {
+    InitializeMono();
 }
 
 ScriptInterpreterMono::~ScriptInterpreterMono()
 {
+    ShutdownMono();
+}
+
+void ScriptInterpreterMono::InitializeMono()
+{
+    if (g_initialized)
+        return;
+
+    g_initialized = true;
+
+    mono_config_parse(nullptr);
+
+    monoDomain = mono_jit_init_version("lldb", "v4.0.30319");
+
+    const char *monoRootDir = mono_assembly_getrootdir();
+
+    llvm::SmallString<256> lldbAssemblyPath;
+    llvm::sys::path::append(lldbAssemblyPath, monoRootDir, "LLDBSharp.dll");
+    lldbAssembly = mono_domain_assembly_open(monoDomain, lldbAssemblyPath.c_str());
+
+    if (!lldbAssembly) {
+        m_interpreter.GetDebugger().GetErrorFile()->PutCString(
+            "error: could not find LLDBSharp assembly in the path.\n");
+    }
+
+    lldbImage = mono_assembly_get_image(lldbAssembly);
+}
+
+void ScriptInterpreterMono::ShutdownMono()
+{
+    mono_jit_cleanup(monoDomain);
 }
 
 bool
@@ -40,8 +83,15 @@ ScriptInterpreterMono::ExecuteOneLine(const char *command, CommandReturnObject *
 void
 ScriptInterpreterMono::ExecuteInterpreterLoop()
 {
-    m_interpreter.GetDebugger().GetErrorFile()->PutCString(
-        "error: there is no embedded script interpreter in this mode.\n");
+    Timer scoped_timer(__PRETTY_FUNCTION__, __PRETTY_FUNCTION__);
+
+    Debugger &debugger = GetCommandInterpreter().GetDebugger();
+
+    if (!debugger.GetInputFile()->GetFile().IsValid())
+        return;
+
+    // We do not support loop execution yet in the Mono plugin.
+    return;
 }
 
 void
@@ -61,8 +111,6 @@ ScriptInterpreterMono::Initialize()
 void
 ScriptInterpreterMono::Terminate()
 {
-    // Shutdown Mono runtime
-    // mono_jit_cleanup();
 }
 
 lldb::ScriptInterpreterSP

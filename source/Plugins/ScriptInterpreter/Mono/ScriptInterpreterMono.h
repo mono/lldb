@@ -16,11 +16,21 @@
 // Project includes
 #include "lldb/Interpreter/ScriptInterpreter.h"
 
+typedef struct _MonoDomain MonoDomain;
+typedef struct _MonoAssembly MonoAssembly;
+
 namespace lldb_private
 {
 
     class ScriptInterpreterMono : public ScriptInterpreter
     {
+        MonoDomain *monoDomain;
+        MonoAssembly *lldbAssembly;
+        MonoImage *lldbImage;
+
+        void InitializeMono();
+        void ShutdownMono();
+
     public:
         ScriptInterpreterMono(CommandInterpreter &interpreter);
 
