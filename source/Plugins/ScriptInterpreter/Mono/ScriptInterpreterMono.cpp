@@ -64,6 +64,39 @@ void ScriptInterpreterMono::InitializeMono()
     }
 
     lldbImage = mono_assembly_get_image(lldbAssembly);
+
+    lldbDebuggerClass = mono_class_from_name(lldbImage, "LLDB", "Debugger");
+
+    if (!lldbDebuggerClass) {
+        m_interpreter.GetDebugger().GetErrorFile()->PutCString(
+            "error: could not find LLDB.Debugger class in assembly.\n");
+    }
+
+    //lldbDebuggerInstance = mono_object_new(monoDomain, lldbDebuggerClass);
+    //mono_runtime_object_init(lldbDebuggerInstance);
+
+    // Find the C++# generated __CreateInstance method.
+    auto method = std::string(mono_class_get_namespace(lldbDebuggerClass)) + "."
+        + std::string(mono_class_get_name(lldbDebuggerClass)) + ":"
+        + std::string("__CreateInstance") + "(intptr,bool)";
+
+    MonoMethodDesc* desc = mono_method_desc_new(method.c_str(), true);
+
+    MonoMethod* lldbDebuggerCreateInstanceMethod =
+        mono_method_desc_search_in_class(desc, lldbDebuggerClass);
+
+    mono_method_desc_free(desc);
+
+    void* args[2];
+
+    // Setup the parameters to pass.
+    // static Debugger __CreateInstance(global::System.IntPtr native, bool skipVTables = false)
+    Debugger &debugger = GetCommandInterpreter().GetDebugger();
+    args[0] = &debugger;
+    args[1] = false;
+
+    MonoObject *result;
+    mono_runtime_invoke(lldbDebuggerCreateInstanceMethod, &result, args, nullptr);
 }
 
 void ScriptInterpreterMono::ShutdownMono()

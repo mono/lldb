@@ -18,6 +18,10 @@
 
 typedef struct _MonoDomain MonoDomain;
 typedef struct _MonoAssembly MonoAssembly;
+typedef struct _MonoImage MonoImage;
+typedef struct _MonoClass MonoClass;
+typedef struct _MonoMethod MonoMethod;
+typedef struct _MonoObject MonoObject;
 
 namespace lldb_private
 {
@@ -27,6 +31,8 @@ namespace lldb_private
         MonoDomain *monoDomain;
         MonoAssembly *lldbAssembly;
         MonoImage *lldbImage;
+        MonoClass *lldbDebuggerClass;
+        MonoObject* lldbDebuggerInstance;
 
         void InitializeMono();
         void ShutdownMono();
