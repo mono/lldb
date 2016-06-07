@@ -73,6 +73,9 @@ ScriptInterpreter::LanguageToString (lldb::ScriptLanguage language)
         case eScriptLanguagePython:
             return_value = "Python";
             break;
+        case eScriptLanguageMono:
+            return_value = "Mono";
+            break;            
     }
 
     return return_value;

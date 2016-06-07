@@ -93,7 +93,7 @@ void ScriptInterpreterMono::InitializeMono()
     // static Debugger __CreateInstance(global::System.IntPtr native, bool skipVTables = false)
     Debugger &debugger = GetCommandInterpreter().GetDebugger();
     args[0] = &debugger;
-    args[1] = false;
+    args[1] = 0;
 
     MonoObject *result;
     mono_runtime_invoke(lldbDebuggerCreateInstanceMethod, &result, args, nullptr);
