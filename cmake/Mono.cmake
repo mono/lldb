@@ -17,7 +17,7 @@ function(find_mono_libs_windows)
   file(TO_CMAKE_PATH "${MONO_HOME}/msvc/Win32/lib/Debug_SGen/${MONOLIBS_BASE_NAME}.lib" MONO_DEBUG_LIB)
   file(TO_CMAKE_PATH "${MONO_HOME}/msvc/Win32/bin/Debug_SGen/${MONOLIBS_BASE_NAME}.dll" MONO_DEBUG_DLL)
   file(TO_CMAKE_PATH "${MONO_HOME}/msvc/Win32/lib/Release_SGen/${MONOLIBS_BASE_NAME}.lib" MONO_RELEASE_LIB)
-  file(TO_CMAKE_PATH "${MONO_HOME}/msvc/Win32/bin/Release_SGen/${MONOLIBS_BASE_NAME}.lib" MONO_RELEASE_DLL)
+  file(TO_CMAKE_PATH "${MONO_HOME}/msvc/Win32/bin/Release_SGen/${MONOLIBS_BASE_NAME}.dll" MONO_RELEASE_DLL)
 
   if (NOT EXISTS ${MONO_DEBUG_LIB})
     message(FATAL_ERROR "Unable to find Mono debug library")
@@ -41,6 +41,9 @@ function(find_mono_libs_windows)
 
   set(MONO_LIBRARIES ${MONO_DEBUG_LIB} PARENT_SCOPE)
   set(MONO_DLL ${MONO_DEBUG_DLL} PARENT_SCOPE)
+
+  get_filename_component(MONO_LIBRARY_DIRS ${MONO_DEBUG_LIB} DIRECTORY)
+  set(MONO_LIBRARY_DIRS ${MONO_LIBRARY_DIRS} PARENT_SCOPE)
 endfunction(find_mono_libs_windows)
 
 # - Try to find Mono
